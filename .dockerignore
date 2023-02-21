@@ -1,0 +1,6 @@
+.git*
+.DS_Store*
+._*
+chatgetweb/chat-gpt-web
+chatgetweb/output/*
+chatgetweb/.venv
