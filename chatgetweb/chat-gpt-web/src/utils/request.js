@@ -12,9 +12,11 @@ const service = axios.create({
 // 异常拦截处理器
 const errorHandler = (error) => {
     layer.close(loading)
+    if(error.message){
+        layer.msg(error.message, { icon : 2, time: 5000})
 
-    if (error.response) {
-        layer.msg(error.response.statusText, { icon : 2, time: 5000})
+    }else if (error.response) {
+        console.log(error.response);
 
     } else if (error.request) {
         // The request was made but no response was received
@@ -22,11 +24,7 @@ const errorHandler = (error) => {
         // http.ClientRequest in node.js
         console.log(error.request);
 
-    } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
     }
-
 
     return Promise.reject(error)
 

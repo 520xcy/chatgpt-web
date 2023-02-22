@@ -20,7 +20,7 @@ g++ \
 python3-dev \
 python3 && \
 python3 -m ensurepip && \
-pip3 install -i https://mirrors.cloud.tencent.com/pypi/simple openai flask flask_cors && \
+pip3 install -i https://mirrors.cloud.tencent.com/pypi/simple revChatGPT flask flask_cors && \
 apk del --purge \
 python3-dev \
 g++ \
