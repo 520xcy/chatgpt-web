@@ -16,37 +16,40 @@
                 v-for="(n, index) in result"
                 :key="index"
                 style="margin: 10px; padding: 10px"
-                v-html="n"
-              ></lay-panel>
+              >
+                <pre :class="n.class">{{ n.text }}</pre>
+              </lay-panel>
             </lay-col>
           </lay-row>
         </lay-container>
       </lay-scroll>
     </lay-body>
     <lay-footer>
-      <lay-row space="0">
-        <lay-col xs="21" sm="21">
-          <lay-input
-            class="h-16"
-            v-model="question"
-            allow-clear="true"
-            size="sm"
-            @keyup.enter="clickHandle"
-          ></lay-input>
-        </lay-col>
+      <lay-container fluid="true">
+        <lay-row space="0">
+          <lay-col xs="21" sm="21">
+            <lay-input
+              class="h-16"
+              v-model="question"
+              allow-clear="true"
+              size="sm"
+              @keyup.enter="clickHandle"
+            ></lay-input>
+          </lay-col>
 
-        <lay-col xs="3" sm="3">
-          <lay-button
-            size="sm"
-            class="h-16"
-            type="normal"
-            @click="clickHandle"
-            :loading="loadState"
-            loadingIcon="layui-icon-loading"
-            >发送</lay-button
-          ></lay-col
-        >
-      </lay-row>
+          <lay-col xs="3" sm="3">
+            <lay-button
+              size="sm"
+              class="h-16"
+              type="normal"
+              @click="clickHandle"
+              :loading="loadState"
+              loadingIcon="layui-icon-loading"
+              >发送</lay-button
+            ></lay-col
+          >
+        </lay-row>
+      </lay-container>
     </lay-footer>
   </lay-layout>
 </template>
@@ -69,21 +72,29 @@ const clickHandle = () => {
   loadState.value = true;
   let t = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
-  result.value.unshift(
-    '<pre style="text-align: right">' + t + "\n" + question.value + "</pre>"
-  );
+  result.value.unshift({
+    text: t + "\n" + question.value,
+    class: "right",
+  });
+
   request({
     url: "/",
     method: "post",
     data: { question: question.value },
-  }).then((res) => {
-    t = dayjs().format("YYYY-MM-DD HH:mm:ss");
-    result.value.unshift(
-      '<pre style="text-align: left">' + t + "\n" + res.data.message + "</pre>"
-    );
-    question.value = "";
-    loadState.value = false;
-  });
+  })
+    .then((res) => {
+      t = dayjs().format("YYYY-MM-DD HH:mm:ss");
+      result.value.unshift({
+        text: t + "\n" + res.data.message,
+        class: "left",
+      });
+      question.value = "";
+      loadState.value = false;
+    })
+    .catch((error) => {
+      loadState.value = false;
+      console.log(error);
+    });
 };
 </script>
 
@@ -119,5 +130,11 @@ const clickHandle = () => {
 }
 pre {
   white-space: pre-wrap;
+}
+pre.right {
+  text-align: right;
+}
+pre.left {
+  text-align: left;
 }
 </style>
